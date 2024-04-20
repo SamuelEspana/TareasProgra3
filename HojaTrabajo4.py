@@ -127,6 +127,8 @@ def main_menu():
 
 binaryTree = BinaryTree()
 
+port = int(os.environ.get('PORT', 5000))
+
 @app.route('/add_nodo_manual', methods=['POST'])
 def add_nodo_manual():
     data = request.json
@@ -171,10 +173,7 @@ def insertar_csv():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return jsonify({'respuesta':'done'}),200
+    return jsonify({'respuesta': 'done'}), 200
 
 if __name__ == "__main__":
-    """
-    main_menu()
-    """
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=port)
