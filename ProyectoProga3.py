@@ -1,5 +1,6 @@
 import tkinter as tk
 import random
+import graphviz
 
 class TicTacToe:
     def __init__(self):
@@ -61,8 +62,12 @@ class TicTacToeGUI:
         self.reset_button.grid(row=3, column=0, columnspan=3, sticky='nsew')
         self.show_weights_button = tk.Button(root, text='Ver Ponderaciones', command=self.show_weights, font='normal 15 bold', bg='lightgreen')
         self.show_weights_button.grid(row=4, column=0, columnspan=3, sticky='nsew')
+        self.graph_weights_button = tk.Button(root, text='Graficar Ponderaciones', command=self.graph_weights, font='normal 15 bold', bg='lightblue')
+        self.graph_weights_button.grid(row=5, column=0, columnspan=3, sticky='nsew')
+        self.credits_button = tk.Button(root, text='Créditos', command=self.show_credits, font='normal 15 bold', bg='lightgrey')
+        self.credits_button.grid(row=6, column=0, columnspan=3, sticky='nsew')
         self.status_label = tk.Label(root, text="Tu turno", font='normal 15 bold', bg='lightblue')
-        self.status_label.grid(row=5, column=0, columnspan=3, sticky='nsew')
+        self.status_label.grid(row=7, column=0, columnspan=3, sticky='nsew')
         self.game_history = []
 
     def player_move(self, index):
@@ -114,6 +119,28 @@ class TicTacToeGUI:
             for move, weight in moves.items():
                 tk.Label(weights_window, text=f"Mov: {move} -> Peso: {weight}").grid(row=row, column=1, sticky='w')
                 row += 1
+
+    def graph_weights(self):
+        dot = graphviz.Digraph(comment='Ponderaciones de Tic Tac Toe')
+        for state, moves in self.game.states.items():
+            dot.node(state, state)
+            for move, weight in moves.items():
+                move_state = state[:move] + 'X' + state[move+1:]
+                dot.node(move_state, move_state)
+                dot.edge(state, move_state, label=str(weight))
+        dot.render('tic_tac_toe_weights', format='png', view=True)
+
+    def show_credits(self):
+        credits_window = tk.Toplevel(self.root)
+        credits_window.title("Créditos")
+        credits = [
+            "Jonathan Herrera 9490-22-11551",
+            "Mario Culajay 9490-225771",
+            "Segrio Sanchez 9490-21-1077",
+            "Samuel España 9490-22-11789"
+        ]
+        for i, credit in enumerate(credits):
+            tk.Label(credits_window, text=credit, font='normal 15 bold').grid(row=i, column=0, sticky='w')
 
 if __name__ == '__main__':
     root = tk.Tk()
