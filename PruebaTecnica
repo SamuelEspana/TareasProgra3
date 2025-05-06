@@ -1,0 +1,51 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using PruebaSamuel01.Modelo;
+namespace PruebaSamuel01
+{
+    public partial class Form1 : Form
+    {
+        BDPruebaTecnicaSamuelEntities bd = new BDPruebaTecnicaSamuelEntities();
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void btnCrear_Click(object sender, EventArgs e)
+        {
+
+            TB_Tareas t = new TB_Tareas();
+            t.Titulo = txtTitulo.Text;
+            t.Descripcion = txtDescripcion.Text;
+            t.Prioridad = txtPrioridad.Text;
+            t.FechaLimite = timepicker.Value;
+            t.FechaCreacion = DateTime.Today;
+            bd.TB_Tareas.Add(t);
+            bd.SaveChanges();
+
+            MessageBox.Show("La tarea se Creo Exitosamente");
+
+            var listado = bd.TB_Tareas.ToList().Select(x => new { Codigo = x.TareaId, Titulo = x.Titulo, Descripcion = x.Descripcion, FechaLimite = x.FechaLimite, FechaCreacion = x.FechaCreacion }).ToList();
+            dataGridView1.DataSource = listado;
+
+            txtDescripcion.Text = "";
+            txtPrioridad.Text = "";
+            txtTitulo.Text = "";
+            
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            var listado = bd.TB_Tareas.ToList().Select(x => new { Codigo = x.TareaId, Titulo = x.Titulo, Descripcion = x.Descripcion, Prioridad = x.Prioridad,FechaLimite = x.FechaLimite, FechaCreacion = x.FechaCreacion }).ToList();
+            dataGridView1.DataSource = listado;
+        }
+    }
+}
